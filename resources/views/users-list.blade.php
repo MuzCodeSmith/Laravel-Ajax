@@ -16,6 +16,11 @@
     Add User
     </button>
 
+    <div class="container mt-2 mb-4">
+        <div class="input-group">
+            <input type="text"  class="form-control" id="searchInput" placeholder="Search users...">
+        </div>
+    </div>
 
     <div id="user-table" >
         <span class="label label-default" >loading records...</span>
@@ -175,6 +180,22 @@
                 success:function(res){
                     $('#addUserModal').modal('hide');
                     fetchUsers();
+                }
+            })
+        })
+
+        $('#searchInput').on('keyup',function(){
+            var searchKey = $(this).val();
+            $.ajax({
+                url:'/search',
+                type:'POST',
+                headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data:{"key":searchKey},
+                success:function(res){
+                    $('#user-table').html('')   
+                    $('#user-table').html(res)  
                 }
             })
         })

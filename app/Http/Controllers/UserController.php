@@ -90,4 +90,41 @@ class UserController extends Controller
             return true;
         }
     }
+
+    public function searchResults(Request $request){
+        $searckKey = $request->key;
+        $results = User::where('name','LIKE',"%$searckKey%")->orWhere('email','LIKE',"%{$searckKey}%")->get();
+
+        $response = '<table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Password</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>';
+
+        foreach($results as $result){
+            $response .= "
+            <tr>
+                <td>".$result->id."</td>
+                <td>".$result->name."</td>
+                <td>".$result->email."</td>
+                <td>".$result->password."</td>
+                <td>
+                    <button class='btn btn-success' id='edit-user' data-id='{$result->id}' data-bs-toggle='modal' data-bs-target='#addUserModal' >Edit</button>
+                    <button class='btn btn-danger' id='delete-user' data-id='{$result->id}'>Delete</button>
+                </td>
+            </tr>";
+        }
+
+        $response .= '</tbody>
+        </table>';
+
+        return $response;
+
+    }
 }
