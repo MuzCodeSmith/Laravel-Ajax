@@ -12,7 +12,7 @@
 <div class="container mt-5">
     <h2 class="mb-4">Users List</h2>
 
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addUserModal">
+    <button type="button" id="addUserBtn" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addUserModal">
     Add User
     </button>
 
@@ -29,22 +29,21 @@
                 <h5 class="modal-title" id="addUserModalLabel">Add New User</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" id="addUpdateForm" >
                 <form method="POST" id="addUserForm">
                     @csrf
                     <div class="mb-3">
                         <label for="name" class="form-label">Full Name</label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter full name" >
+                        <input type="text" autocomplete='off' class="form-control" id="name" name="name" placeholder="Enter full name" >
                     </div>
 
                     <div class="mb-3">
                         <label for="email" class="form-label">Email Address</label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" >
+                        <input type="email" autocomplete='off' class="form-control" id="email" name="email" placeholder="Enter email" >
                     </div>
-
                     <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" >
+                        <label for="password" id="password-label" class="form-label">Password</label>
+                        <input type="password" autocomplete='off' class="form-control" id="password" name="password" placeholder="Enter password" >
                     </div>
                     <div class="modal-footer">
                         <button type="submit" id="addUser" class="btn btn-primary">Add User</button>
@@ -76,8 +75,11 @@
         }
         fetchUsers();
 
-        $('#addUserForm').submit(function(e){
+
+        // $('#addUserForm').submit(function(e){
+        $('#addUser').on('click',function(e){
             e.preventDefault();
+
             var user_name = $('#name').val();
             var user_email = $('#email').val();
             var user_password = $('#password').val();
@@ -109,6 +111,16 @@
             })
         })
 
+        $(document).on('click','#addUserBtn',function(){
+            $('#addUserModalLabel').text('Add User');
+            $('#addUser').text('Add');
+            $('#name').val('');
+            $('#email').val('');
+            $('#password').val('');
+            $('#password-label').show();
+            $('#password').show();
+        });
+
         $(document).on('click','#delete-user',function(){
             var id = $(this).data('id');
             if(confirm("Are you really want to delete this record?")){
@@ -125,6 +137,48 @@
             })
             }
         })
+
+        $(document).on('click','#edit-user',function(){
+            var id = $(this).data('id');
+            console.log(id)
+            var element = this;
+            $.ajax({
+                url:`edit-user/${id}`,
+                type:'GET',
+                success:function(res){
+                    var hiddenIdInput = `<input type="hidden" id="user_id" value="${res['id']}" name="">`;
+                    $('#addUserForm').prepend(hiddenIdInput);
+                    $('#addUserModalLabel').text('Update User');
+                    $('#addUser').text('Update');
+                    $('#name').val(res['name']);
+                    $('#email').val(res['email']);
+                    $('#password-label').hide();
+                    $('#password').hide();
+                    $('#addUser').addClass('updateUser');
+                }
+            })
+        })
+
+        $(document).on('click','.updateUser',function(){
+            var id = $('#user_id').val();
+
+            $.ajax({
+                url:`update-user/${id}`,
+                type:'PUT',
+                headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data:{
+                    name:$('#name').val(),
+                    email:$('#email').val()
+                },
+                success:function(res){
+                    $('#addUserModal').modal('hide');
+                    fetchUsers();
+                }
+            })
+        })
+
     }); 
 </script>
 </body>

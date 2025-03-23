@@ -33,6 +33,7 @@ class UserController extends Controller
                 <td>".$user->email."</td>
                 <td>".$user->password."</td>
                 <td>
+                    <button class='btn btn-success' id='edit-user' data-id='{$user->id}' data-bs-toggle='modal' data-bs-target='#addUserModal' >Edit</button>
                     <button class='btn btn-danger' id='delete-user' data-id='{$user->id}'>Delete</button>
                 </td>
             </tr>";
@@ -67,6 +68,26 @@ class UserController extends Controller
             return 1;
         }else{
             return 0;
+        }
+    }
+
+    public function editUser($id){
+        $userData = User::find($id);
+        return $userData;
+    }
+    public function updateUser($id, Request $request){
+        $userData = User::find($id);
+        if(!$userData){
+            return false;
+        }
+        $status = $userData->update([
+            'name'=>$request->name,
+            'email'=>$request->email
+        ]);
+        if(!$status){
+            return false;
+        }else{
+            return true;
         }
     }
 }
