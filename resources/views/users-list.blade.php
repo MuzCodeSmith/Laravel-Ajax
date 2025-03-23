@@ -11,46 +11,28 @@
 <div class="container mt-5">
     <h2 class="mb-4">Users List</h2>
 
-    <button class="btn btn-primary mb-3" id="fetchUsers" data-bs-toggle="modal" data-bs-target="#addUserModal">
+    <button class="btn btn-primary mb-3" id="addUser" data-bs-toggle="modal" data-bs-target="#addUserModal">
         Fetch Users
     </button>
     <div id="user-table" >
-        <table class="table table-bordered table-striped">
-            <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Password</th>
-                </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>1</td>
-                <td>Muzaffar</td>
-                <td>shakhmuzffar82@gmail.com</td>
-                <td>*********</td>
-            </tr>
-            </tbody>
-        </table>
+        <span class="label label-default" >loading records...</span>
     </div>
 </div>
 <!-- jQuery CDN -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
     $(document).ready(function(){
-        $('#fetchUsers').click(function(){
+        function fetchUsers(){
             $.ajax({
                 url:'/fetch-users',
                 type:'get',
                 success:function(res){
                     $('#user-table').html('')   
-                    $('#user-table').html(res)   
-
+                    $('#user-table').html(res)  
                 }
-
             })
-        })
+        }
+        fetchUsers();
     }); 
 </script>
 </body>
