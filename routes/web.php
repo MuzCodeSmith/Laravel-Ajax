@@ -9,3 +9,4 @@ Route::get('/', function () {
 
 Route::get('/users',[UserController::class,'getUsers']);
 Route::get('/fetch-users',[UserController::class,'fetchUsers']);
+Route::post('/create-user',[UserController::class,'creatUser']);

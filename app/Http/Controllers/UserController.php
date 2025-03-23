@@ -40,4 +40,20 @@ class UserController extends Controller
         return $response;
 
     }
+
+    public function creatUser(Request $request){
+        $userData = $request->all();
+        $status = User::create([
+            'name' =>$userData['name'],
+            'email' =>$userData['email'],
+            'password' =>$userData['password']
+        ]);
+
+        if($status){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
 }
