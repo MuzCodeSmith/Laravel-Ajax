@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Users Table</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -106,6 +107,23 @@
                     }
                 }
             })
+        })
+
+        $(document).on('click','#delete-user',function(){
+            var id = $(this).data('id');
+            if(confirm("Are you really want to delete this record?")){
+            var element = this;
+            $.ajax({
+                url:`delete-user/${id}`,
+                type:'DELETE',
+                headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success:function(res){
+                    $(element).closest('tr').fadeOut();
+                }
+            })
+            }
         })
     }); 
 </script>

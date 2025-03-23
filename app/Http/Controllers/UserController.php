@@ -20,6 +20,7 @@ class UserController extends Controller
                 <th>Name</th>
                 <th>Email</th>
                 <th>Password</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>';
@@ -31,6 +32,9 @@ class UserController extends Controller
                 <td>".$user->name."</td>
                 <td>".$user->email."</td>
                 <td>".$user->password."</td>
+                <td>
+                    <button class='btn btn-danger' id='delete-user' data-id='{$user->id}'>Delete</button>
+                </td>
             </tr>";
         }
 
@@ -55,5 +59,14 @@ class UserController extends Controller
             return false;
         }
 
+    }
+
+    public function deleteUser($id){
+        $status = User::destroy($id);
+        if($status){
+            return 1;
+        }else{
+            return 0;
+        }
     }
 }
